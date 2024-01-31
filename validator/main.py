@@ -18,7 +18,7 @@ else:
     _HAS_NUMPY = True
 
 
-@register_validator(name="similar-to-document", data_type="string")
+@register_validator(name="guardrails/similar_to_document", data_type="string")
 class SimilarToDocument(Validator):
     """Validates that a value is similar to the document.
 
