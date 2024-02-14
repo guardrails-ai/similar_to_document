@@ -94,9 +94,36 @@ guard.parse("""
 
 ## API Reference
 
-`__init__`
+**`__init__(self, document, threshold=0.7, model="text-embedding-ada-002", on_fail="noop")`**
+<ul>
 
-- `document` - The document to use for the similarity check.
-- `threshold` - The minimum cosine similarity to be considered similar. Defaults to 0.7.
-- `model` - The embedding model to use. Defaults to text-embedding-ada-002.
-- `on_fail`: The policy to enact when a validator fails.
+Initializes a new instance of the Validator class.
+
+**Parameters:**
+
+- **`document`** _(str):_ The document to use for the similarity check.
+- **`threshold`** _(float):_ The minimum cosine similarity to be considered similar. Defaults to 0.7.
+- **`model`** _(str):_ The embedding model to use. Defaults to text-embedding-ada-002.
+- **`on_fail`** *(str, Callable):* The policy to enact when a validator fails. If `str`, must be one of `reask`, `fix`, `filter`, `refrain`, `noop`, `exception` or `fix_reask`. Otherwise, must be a function that is called when the validator fails.
+
+</ul>
+
+<br>
+
+**`__call__(self, value, metadata={}) → ValidationOutcome`**
+
+<ul>
+
+Validates the given `value` using the rules defined in this validator, relying on the `metadata` provided to customize the validation process. This method is automatically invoked by `guard.parse(...)`, ensuring the validation logic is applied to the input data.
+
+Note:
+
+1. This method should not be called directly by the user. Instead, invoke `guard.parse(...)` where this method will be called internally for each associated Validator.
+2. When invoking `guard.parse(...)`, ensure to pass the appropriate `metadata` dictionary that includes keys and values required by this validator. If `guard` is associated with multiple validators, combine all necessary metadata into a single dictionary.
+
+**Parameters:**
+
+- **`value`** *(Any):* The input value to validate.
+- **`metadata`** *(dict):* A dictionary containing metadata required for validation. No additional metadata keys are needed for this validator.
+
+</ul>
