@@ -101,7 +101,7 @@ Initializes a new instance of the Validator class.
 
 - **`document`** _(str):_ The text of the document to use for the similarity check.
 - **`threshold`** _(float):_ The minimum cosine similarity to be considered similar. Defaults to 0.7.
-- **`model`** _(str):_ The embedding model to use. Defaults to "all-MiniLM-L6-v2". Check the [sentence-transformers documentation](https://www.sbert.net/docs/pretrained_models.html) for available models.
+- **`model`** _(str):_ The embedding model to use. Defaults to `all-MiniLM-L6-v2`. Check the [sentence-transformers documentation](https://www.sbert.net/docs/pretrained_models.html) for available models.
 - **`on_fail`** *(str, Callable):* The policy to enact when a validator fails. If `str`, must be one of `reask`, `fix`, `filter`, `refrain`, `noop`, `exception` or `fix_reask`. Otherwise, must be a function that is called when the validator fails.
 
 </ul>
