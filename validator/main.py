@@ -1,7 +1,6 @@
 from typing import Any, Callable, Dict, Optional
 
 from guardrails.logger import logger
-from guardrails.utils.openai_utils import OpenAIClient
 from guardrails.validator_base import (
     FailResult,
     PassResult,
@@ -9,13 +8,7 @@ from guardrails.validator_base import (
     Validator,
     register_validator,
 )
-
-try:
-    import numpy as np
-except ImportError:
-    _HAS_NUMPY = False
-else:
-    _HAS_NUMPY = True
+from sentence_transformers import SentenceTransformer, util
 
 
 @register_validator(name="guardrails/similar_to_document", data_type="string")
@@ -30,67 +23,72 @@ class SimilarToDocument(Validator):
 
     | Property                      | Description                       |
     | ----------------------------- | --------------------------------- |
-    | Name for `format` attribute   | `similar-to-document`             |
-    | Supported data types          | `string`                             |
+    | Name for `format` attribute   | `guardrails/similar_to_document`  |
+    | Supported data types          | `string`                          |
     | Programmatic fix              | None                              |
 
     Args:
-        document: The document to use for the similarity check.
-        threshold: The minimum cosine similarity to be considered similar.  Defaults to 0.7.
-        model: The embedding model to use.  Defaults to text-embedding-ada-002.
+        document (str): The document string to use for similarity check.
+        threshold (float): The minimum cosine similarity to be considered similar.  Defaults to 0.7.
+        model (str): The embedding model to use.  Defaults to "all-MiniLM-L6-v2" from SentenceTransformers.
     """  # noqa
 
     def __init__(
         self,
         document: str,
         threshold: float = 0.7,
-        model: str = "text-embedding-ada-002",
+        model: str = "all-MiniLM-L6-v2",
         on_fail: Optional[Callable] = None,
     ):
         super().__init__(
             on_fail=on_fail, document=document, threshold=threshold, model=model
         )
-        if not _HAS_NUMPY:
-            raise ImportError(
-                f"The {self.__class__.__name__} validator requires the numpy package.\n"
-                "`poetry add numpy` to install it."
-            )
-
-        self.client = OpenAIClient()
 
         self._document = document
-        embedding_response = self.client.create_embedding(input=[document], model=model)
-        embedding = embedding_response[0]  # type: ignore
-        self._document_embedding = np.array(embedding)
-        self._model = model
         self._threshold = float(threshold)
+        try:
+            self._model = SentenceTransformer(model)
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to load the model {model}. Please check the model name."
+            ) from e
 
-    @staticmethod
-    def cosine_similarity(a: "np.ndarray", b: "np.ndarray") -> float:
-        """Calculate the cosine similarity between two vectors.
-
-        Args:
-            a: The first vector.
-            b: The second vector.
-
-        Returns:
-            float: The cosine similarity between the two vectors.
-        """
-        return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+        # Compute the document embedding
+        try:
+            self._document_embedding = self._model.encode(document)
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to encode the document {document} using the model {model}."
+            ) from e
 
     def validate(self, value: Any, metadata: Dict) -> ValidationResult:
-        logger.debug(f"Validating {value} is similar to document...")
+        """Validation method for the SimilarToDocument validator."""
 
-        embedding_response = self.client.create_embedding(
-            input=[value], model=self._model
-        )
+        logger.debug(f"Validating {value} is similar to the given document...")
+        # Compute the value embedding
+        try:
+            value_embedding = self._model.encode(value)
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to encode the value {value} using the model {self._model}."
+            ) from e
 
-        value_embedding = np.array(embedding_response[0])  # type: ignore
+        # Compute the cosine similarity between the document and the value
+        try:
+            similarity = util.cos_sim(
+                self._document_embedding,
+                value_embedding,
+            )
+        except Exception as e:
+            raise RuntimeError(
+                "Failed to compute the cosine similarity between the document and the value."
+            ) from e
 
-        similarity = self.cosine_similarity(
-            self._document_embedding,
-            value_embedding,
-        )
+        # Convert the tensor to a float
+        similarity = similarity[0][0].item()
+        print(f"Similarity: {round(similarity, 3)}, Type: {type(similarity)}")
+
+        # Compare the similarity with the threshold
         if similarity < self._threshold:
             return FailResult(
                 error_message=f"Value {value} is not similar enough "
@@ -98,6 +96,3 @@ class SimilarToDocument(Validator):
             )
 
         return PassResult()
-
-    def to_prompt(self, with_keywords: bool = True) -> str:
-        return ""
