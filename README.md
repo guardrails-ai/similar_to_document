@@ -77,17 +77,17 @@ except Exception as e:
 ```
 Output:
 ```console
-Validation failed for field with errors: Value 
-        Graph neural networks (GNNs) are specialized neural networks that can operate on graph data
-        structures. These networks are designed to capture the relationships between nodes in a graph
-        and can be used for a variety of tasks, including node classification, link prediction, and graph classification.
-         is not similar enough to document 
+Validation failed for field with errors: 
+Value:
+    Graph neural networks (GNNs) are specialized neural networks that can operate on graph data
+    structures. These networks are designed to capture the relationships between nodes in a graph
+    and can be used for a variety of tasks, including node classification, link prediction, and graph classification.
+is not similar enough to document:
     Large language models (LLM) are very large deep learning models that are pre-trained on vast amounts of data. 
     The underlying transformer is a set of neural networks that consist of an encoder and a decoder with self-attention capabilities. 
     The encoder and decoder extract meanings from a sequence of text and understand the relationships between words and phrases in it.
     Transformer LLMs are capable of unsupervised training, although a more precise explanation is that transformers perform self-learning. 
     It is through this process that transformers learn to understand basic grammar, languages, and knowledge.
-    .
 ```
 
 ## API Reference
