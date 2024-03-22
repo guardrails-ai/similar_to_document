@@ -46,7 +46,10 @@ class SimilarToDocument(Validator):
 
         self._document = document
         self._threshold = float(threshold)
+
+        # Load the model
         try:
+            print(f"Loading the model {model}. This may take a while...")
             self._model = SentenceTransformer(model)
         except Exception as e:
             raise RuntimeError(
