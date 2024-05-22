@@ -22,7 +22,7 @@ The primary intended uses of this validator is if a “golden” output is known
     - guardrails-ai>=0.4.0
 
 * Foundation model access keys:
-    Yes, if commercial embedding model used
+    - Yes, if commercial embedding model used
 
 ## Installation
 
