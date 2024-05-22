@@ -1,10 +1,9 @@
 ## Overview
 
 | Developed by | Guardrails AI |
-| --- | --- |
 | Date of development | Feb 15, 2024 |
 | Validator type | Quality |
-| Blog | - |
+| Blog |  |
 | License | Apache 2 |
 | Input/Output | Output |
 
@@ -16,16 +15,19 @@ The objective of this validator is to ensure that any LLM-generated text is simi
 
 The primary intended uses of this validator is if a “golden” output is known for a similar subject when generating an LLM output. E.g., there’s previous historical data about a support QA system, and we want to ensure that any new LLM generated text will be similar to historical “golden” QA.
 
-### Resources required
+### Requirements
 
 * Dependencies:
     - `sentence-transformers`
-- Foundation model access keys: Yes, if commercial embedding model used
+    - guardrails-ai>=0.4.0
+
+* Foundation model access keys:
+    Yes, if commercial embedding model used
 
 ## Installation
 
 ```bash
-guardrails hub install hub://guardrails/similar_to_document
+$guardrails hub install hub://guardrails/similar_to_document
 ```
 
 ## Usage Examples
@@ -90,7 +92,7 @@ is not similar enough to document:
     It is through this process that transformers learn to understand basic grammar, languages, and knowledge.
 ```
 
-## API Reference
+# API Reference
 
 **`__init__(self, document, threshold=0.7, model="all-MiniLM-L6-v2", on_fail="noop")`**
 <ul>
@@ -108,7 +110,7 @@ Initializes a new instance of the Validator class.
 
 <br>
 
-**`__call__(self, value, metadata={}) → ValidationResult`**
+**`__call__(self, value, metadata={}) -> ValidationResult`**
 
 <ul>
 
