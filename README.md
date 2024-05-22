@@ -27,7 +27,7 @@ The primary intended uses of this validator is if a “golden” output is known
 ## Installation
 
 ```bash
-$guardrails hub install hub://guardrails/similar_to_document
+$ guardrails hub install hub://guardrails/similar_to_document
 ```
 
 ## Usage Examples
