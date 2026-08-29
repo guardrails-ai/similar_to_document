@@ -1,6 +1,6 @@
 [project]
 name = "similar_to_document"
-version = "0.0.0"
+version = "0.0.1"
 description = "Validates that a value is similar to the document."
 authors = [
     {name = "Guardrails AI", email = "contact@guardrailsai.com"}

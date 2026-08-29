@@ -89,7 +89,6 @@ class SimilarToDocument(Validator):
 
         # Convert the tensor to a float
         similarity = similarity[0][0].item()
-        print(f"Similarity: {round(similarity, 3)}, Type: {type(similarity)}")
 
         # Compare the similarity with the threshold
         if similarity < self._threshold:
